@@ -1,0 +1,50 @@
+在Python函数中，还可以定义可变参数。顾名思义，可变参数就是传入的参数个数是可变的，可以是1个、2个到任意个，还可以是0个
+
+关键字参数：
+可变参数允许你传入0个或任意个参数，这些可变参数在函数调用时自动组装为一个tuple。而关键字参数允许你传入0个或
+任意个含参数名的参数，这些关键字参数在函数内部自动组装为一个dict。请看示例：
+def person(name, age, **kw):
+print('name:', name, 'age:', age, 'other:', kw)
+函数 person 除了必选参数 name 和 age 外，还接受关键字参数 kw 。在调用该函数时，可以只传入必选参数：
+>>> person('Michael', 30)
+name: Michael age: 30 other: {}
+也可以传入任意个数的关键字参数：
+>>> person('Bob', 35, city='Beijing')
+name: Bob age: 35 other: {'city': 'Beijing'}
+>>> person('Adam', 45, gender='M', job='Engineer')
+name: Adam age: 45 other: {'gender': 'M', 'job': 'Engineer'}
+
+
+python占位符：
+%d整数
+%f浮点数
+%s字符串
+%x十六进制整数
+其中，格式化整数和浮点数还可以指定是否补0和整数与小数的位数：
+>>> '%2d-%02d' % (3, 1)
+' 3-01'
+>>> '%.2f' % 3.1415926
+'3.14'
+有些时候，字符串里面的 % 是一个普通字符怎么办？这个时候就需要转义，用 %% 来表示一个 % 
+
+python的字符串内建函数
+
+来自 <https://www.runoob.com/python/python-strings.html> 
+
+#使用filter函数过滤掉非回数
+def is_palindrome(n):
+    return str(n)==str(n)[::-1]
+output=filter(is_palindrome,range(1,1000))
+print(list(output))
+
+str(n)==str(n)[::-1]判断是否为回数，若是回数两值相等。（str(n)[::-1]）表示把n装换成str然后将n颠倒
+
+当函数的参数个数太多，需要简化时，使用 functools.partial 可以创建一个新的函数，这个新函数可以固定住原函数的部分参数，从而在调用时更简单
+int():把字符串转化为整数默认按十进制转换。
+>>> import functools
+>>> int2 = functools.partial(int, base=2)：基于int创建新函数int2，固定base参数，默认按二进制转换，后面调用也可修改base参数
+>>> int2('1000000')
+64
+>>> int2('1010101')
+85
+
