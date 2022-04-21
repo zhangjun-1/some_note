@@ -1,0 +1,32 @@
+docker ps -a:查看所有容器
+
+docker rm 容器ID：删除容器
+
+docker images：查看镜像
+
+docker rmi 镜像ID：删除镜像
+
+docker run -it --privileged 镜像ID /bin/bash:启动并进入容器，--privileged为特权启动，若jenkins上配置勾选，手动启动时则需要加上此选项。
+
+docker exec -it 81c58a382199 /bin/bash --login：进入已启动的容器
+
+docker image pull 镜像地址：从docker镜像仓拉取到本地，配置镜像仓（/etc/docker/下新增daemon.json后重启docker服务，docker版本过低不支持）
+
+docker save -o [tar包名字].tar [镜像ID]     #保存为镜像文件后可在机器间互传
+docker load < [tar包名字].tar               #tar包导入为镜像文件
+
+
+重启docker
+service docker stop
+systemctl daemon-reload
+service docker start 
+
+
+基于已有镜像创建新的镜像：
+先用原有镜像创建容器，安装所需工具等操作后先不关闭，新开终端执行下面命令，待新镜像创建完成即可
+docker commit 容器ID 100.99.53.224:5000/euleros_compile：[tag]
+
+
+docker复制文件到容器内以及从容器内复制文件到宿主机
+从容器里面拷文件到宿主机：docker cp [容器名]:要拷贝的文件在容器里的路径 要拷贝到宿主机的路径
+从宿主机拷贝文件到容器里：docker cp 文件在宿主机的路径 [容器名]:要拷贝到容器里的路径 
