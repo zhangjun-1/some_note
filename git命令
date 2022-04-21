@@ -1,0 +1,45 @@
+1、git取消当前远程代码仓并上传到新仓
+git inti
+find . -name ".git" | xargs rm -Rf
+git init
+git add .
+git commit -m "first"
+git remote add origin 新仓库地址
+git pull --rebase origin master(若新仓库自动生成redeme文件直接上传则会报错)
+git push -u origin master 
+
+
+
+2、分支（branch）的基本操作：
+git branch //查看本地所有分支 
+git branch -r //查看远程所有分支 
+git branch -a //查看本地和远程的所有分支 
+git branch <branchname> //新建分支 
+git branch -d <branchname> //删除本地分支 
+git branch -d -r <branchname> //删除远程分支，删除后还需推送到服务器 
+git push origin:<branchname> //删除后推送至服务器 
+git branch -m <oldbranch> <newbranch> //重命名本地分支 
+git中一些选项解释: 
+-d --delete：删除 
+-D --delete --force的快捷键 
+-f --force：强制 
+-m --move：移动或重命名 
+-M --move --force的快捷键 
+-r --remote：远程 
+-a --all：所有
+
+来自 <https://www.cnblogs.com/runnerjack/p/9342362.html> 
+
+
+
+3、codehub个人fork仓与主仓同步：（所有分支同步：删除fork仓再fork）
+同步指定分支：git remote -v：查看远程仓库路径，若没有主仓路径则执行
+		         git remote add upstream 主仓地址 ：添加远程主仓路径
+		         git status：查看本地是否有未提交的修改
+		         git fetch upstream：若没有未提交的修改，则执行命令抓取远程主仓库的更新
+		         git checkout master：切换到master分支（具体分支按需切换）
+		         git merge upstream/master：合并远程主仓的master到本地仓库
+             git push：把更新后的本地仓库推送到远程个人仓库
+       
+       
+       
