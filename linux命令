@@ -1,0 +1,71 @@
+1、cut,sed,awk删除文件第一列
+（cut截取文件第二列到最后一列）
+cut -d " " -f 2- a.txt
+（sed将第一列替换为空字符）
+sed 's/[^ ] //' a.txt
+（awk打印第二列到最后一列，作为参数使用会出错）
+awk '{for(i = 2; i <= NF; i++) printf("%s ", $i); printf("\n")}'
+来自 <https://www.cnblogs.com/liujiaxin2018/p/15022433.html> 
+
+
+2、unzip解压
+-q:不打印任何信息
+-d:指定解压后目录
+（解压单个文件或部分文件）
+unzip -q zipfile "*.xml" -d dir1
+不解压查看zip压缩包：zip -sf 压缩包
+
+
+3、grep匹配IP
+egrep '[[:digit:]]{1,3}\.[[:digit:]]{1,3}\.[[:digit:]]{1,3}\.[[:digit:]]{1,3}' FILENAME
+
+
+
+4、查看SUSE版本：
+lsb_release -a
+
+
+
+5、watch -n 数字 -d 命令：-n制定多少秒，-d高亮显示变化的内容
+
+
+
+6、释放缓存区内存：
+1)清理pagecache(页面缓存)
+# echo 1 > /proc/sys/vm/drop_caches 或者 # sysctl -w vm.drop_caches=1
+2)清理dentries(目录缓存)和inodes
+# echo 2 > /proc/sys/vm/drop_caches 或者 # sysctl -w vm.drop_caches=2
+3)清理pagecache、dentries和inodes
+# echo 3 > /proc/sys/vm/drop_caches 或者 # sysctl -w vm.drop_caches=3
+注：上面三种方式都是临时释放缓存的方法，要想永久释放缓存，需要在/etc/sysctl.conf文件中配置：vm.drop_caches=1/2/3，然后sysctl -p生效即可！
+来自 <https://blog.csdn.net/weixin_39951295/article/details/116932637> 
+
+
+7、diff:比较多个文本文件的差异，格式：diff [参数] 文件
+-b：忽略空格引起的差异
+-B：忽略空行引起的差异
+--brief或-q：仅报告是否存在差异
+-c：使用上下文输出格式
+
+
+8、chattr设置文件隐藏权限：“chattr +/-参数 文件
+i：无法对文件进行修改，对目录设置后仅能修改子文件不能新建或删除
+a：仅允许追加内容，无法覆盖或删除
+S：文件内容变更后立即同步到硬盘
+s：彻底从硬盘中删除，不可恢复（用0填充原文件所在硬盘区域）
+A：不再修改这个文件的最后访问时间（atime）
+b：不在修改文件或目录的存取时间
+D：检查压缩文件中的错误
+d：当使用dump命令备份时忽略本文件或目录
+c：默认将文件或目录进行压缩
+u：当删除此文件后依然保留其在硬盘中的数据，方便日后恢复
+t：让文件系统支持尾部合并
+X：可以直接访问压缩文件的内容
+lsattr：用于显示文件的隐藏权限
+a：显示所有文件和目录
+l：显示因残权限的全称
+R：地柜处理，将指定目录下的所有文件及子目录一并处理
+d：若目标文件为目录，请加此参数
+
+
+
