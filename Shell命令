@@ -1,0 +1,230 @@
+比较字符串长度：
+如果V_number长度小于6为true：if [ ${#V_number} -lt 6 ]
+替换变量中的字符：
+去除V_number中的点：${V_number/./}（变量/被替换的内容/替换后的内容）
+
+
+sed替换><之间的内容（用于xml文件制作）
+sed -i 's#<version>.*</version>#<version>PANGEA V600R005C30B006</version>#g' filename
+
+
+
+grep命令
+-i 搜索时，忽略大小写
+-c 只输出匹配行的数量
+-n 列出所有的匹配行，显示行号
+-v 显示不包含匹配文本的所有行
+-w 匹配整词
+-x 匹配整行
+-r 递归搜索
+-o 仅显示所匹配到的部分
+
+
+
+SCP免交互脚本：
+#!/bin/bash
+a="/usr1/Euler_compile_env_HGintel/Euler_compile_env/build/PANGEA-Mainline/vendor/NIC/out_put/OceanStor-Pacific_8.1.1_DPx204_nic_update.zip"
+b="/usr1/workspace/V6R5C30_HG_script_upload_cmc/zip_dir/"
+ip="10.244.69.3"
+port="22"
+passwd="huawei@123"
+/bin/rpm -qa|/bin/grep -q expect
+if [ $? -ne 0 ];then
+        echo "please install expect"
+        exit
+fi
+#if [ $# -ne 5 ];then
+#        echo "must 5 parameter,1:source file,2:object file,3:object ip 4:object port,5:passwd"
+#        exit
+#fi
+expect -c "
+  spawn scp -P $port $a root@$ip:$b
+  expect {
+    \"*assword\" {set timeout 300; send \"$passwd\r\";}
+    \"yes/no\" {send \"yes\r\"; exp_continue;}
+  }
+  expect eof"
+
+
+
+SCP免交互命令行：
+expect <<-END
+spawn scp -r 100.99.99.237:/root/.ssh/* /root/.ssh/
+ expect {
+       "*yes/no" {  send "yes\r" 
+         exp_continue}
+         "*assword:" { send "huawei@123\r"} 
+     }
+     set timeout -1
+  expect eof
+END
+
+
+
+10/13位时间戳转换：
+
+#!/bin/sh
+
+function usage(){
+    echo "-h --help \n" \
+         "  将10/13位时间戳转换为本地时间 \n"\
+         "  参数：时间戳，支持10/13位两种 \n"\
+         "  默认值：当前时间向后5min \n"\
+         "  e.g. 1483430400(10位秒时间戳),1483430400000(13位毫秒时间戳) \n"
+    exit 1
+}
+
+###
+os_platform=`uname -s`
+if [[ $# -le 0 ]]; then
+    echo "默认按照当前时间向后5min取值"
+    if [[ "${os_platform}" = "Darwin" ]];then
+        echo `date -v+5M +"%Y-%m-%d %H:%M:%S"`
+    elif [[ "${os_platform}" = "Linux" ]];then
+        echo `date -d +5min +"%Y-%m-%d %H:%M:%S"`
+    fi
+else
+    case $1 in
+      -h|--help)
+          usage
+      ;;
+      *)
+          timestampStr=${1}
+          length=`echo ${#timestampStr}`
+          if [[ ${length} -ne 10 ]] && [[ ${length} -ne 13 ]];then
+              echo "请输入10/13位数字时间戳"
+              exit 1
+          elif [[ ${length} -eq 13 ]];then
+              timestampStr=${timestampStr:0:10}
+          fi
+          echo "时间戳位：${timestampStr}"
+      if [[ "${os_platform}" = "Darwin" ]];then
+              dateStr=`date -r${timestampStr} +"%Y-%m-%d %H:%M:%S"`
+          elif [[ "${os_platform}" = "Linux" ]];then
+              dateStr=`date -d @${timestampStr} +"%Y-%m-%d %H:%M:%S"`
+          fi
+          echo "${1}对应的本地时间为${dateStr}"
+      ;;
+    esac
+fi
+
+
+
+时间转换为10位时间戳：date -d "2021-10-15 15:31:00" +%s
+时间转换为13位时间戳：
+
+#!/bin/sh
+
+function usage(){
+    echo "-h --help \n" \
+         "  将本地时间转换为13位时间戳(毫秒时间戳) \n"\
+         "  只有1个参数:本地时间，参数格式：'%Y-%m-%d %H:%M:%S' \n"\
+         "  默认值：当前时间向后5min \n"\
+         "  e.g. 2017-01-01 16:00:00 \n"
+    exit 1
+}
+
+
+##时间采用正则匹配
+time_pattern="^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2} [0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}"
+os_platform=`uname -s`
+
+if [[ $# -le 0 ]]; then
+    echo "默认按照当前时间向后5min取值"
+    if [[ "${os_platform}" = "Darwin" ]];then
+        echo `date -v+5M +%s`000
+    elif [[ "${os_platform}" = "Linux" ]];then
+        echo `date -d +5min +%s`000
+    fi
+else
+    case $1 in
+      -h|--help)
+          usage
+      ;;
+      *)
+          dateStr=${1}
+          echo ${dateStr}
+          if [[ "${dateStr}" =~ ${time_pattern} ]];then
+              if [[ "${os_platform}" = "Darwin" ]];then
+                  echo `date -j -f "%Y-%m-%d %H:%M:%S" "${dateStr}" +%s`000
+              elif [[ "${os_platform}" = "Linux" ]];then
+                  echo `date -d "${dateStr}" +%s`000
+              fi
+          else
+              echo "时间格式不正确，请按照'%Y-%m-%d %H:%M:%S'格式输入，如'2017-01-01 16:00:00' "
+          fi
+      ;;
+    esac
+fi
+
+
+
+set指令能设置所使用shell的执行方式，可依照不同的需求来做设置
+-a 　标示已修改的变量，以供输出至环境变量。 
+-b 　使被中止的后台程序立刻回报执行状态。 
+-C 　转向所产生的文件无法覆盖已存在的文件。 
+-d 　Shell预设会用杂凑表记忆使用过的指令，以加速指令的执行。使用-d参数可取消。 
+-e 　若指令传回值不等于0，则立即退出shell。　　 
+-f　 　取消使用通配符。 
+-h 　自动记录函数的所在位置。 
+-H Shell 　可利用"!"加<指令编号>的方式来执行history中记录的指令。 
+-k 　指令所给的参数都会被视为此指令的环境变量。 
+-l 　记录for循环的变量名称。 
+-m 　使用监视模式。 
+-n 　只读取指令，而不实际执行。 
+-p 　启动优先顺序模式。 
+-P 　启动-P参数后，执行指令时，会以实际的文件或目录来取代符号连接。 
+-t 　执行完随后的指令，即退出shell。 
+-u 　当执行时使用到未定义过的变量，则显示错误信息。 
+-v 　显示shell所读取的输入值。 
+-x 　执行指令后，会先显示该指令及所下的参数。 
++<参数> 取消某个set曾启动的参数。
+
+
+
+if条件表达式：
+(1).文件/文件夹(目录)判断
+[ -b FILE ] 如果 FILE 存在且是一个块特殊文件则为真。
+[ -c FILE ] 如果 FILE 存在且是一个字特殊文件则为真。
+[ -d DIR ] 如果 FILE 存在且是一个目录则为真。
+[ -e FILE ] 如果 FILE 存在则为真。
+[ -f FILE ] 如果 FILE 存在且是一个普通文件则为真。
+[ -g FILE ] 如果 FILE 存在且已经设置了SGID则为真。
+[ -k FILE ] 如果 FILE 存在且已经设置了粘制位则为真。
+[ -p FILE ] 如果 FILE 存在且是一个名字管道(F如果O)则为真。
+[ -r FILE ] 如果 FILE 存在且是可读的则为真。
+[ -s FILE ] 如果 FILE 存在且大小不为0则为真。
+[ -t FD ] 如果文件描述符 FD 打开且指向一个终端则为真。
+[ -u FILE ] 如果 FILE 存在且设置了SUID (set user ID)则为真。
+[ -w FILE ] 如果 FILE存在且是可写的则为真。
+[ -x FILE ] 如果 FILE 存在且是可执行的则为真。
+[ -O FILE ] 如果 FILE 存在且属有效用户ID则为真。
+[ -G FILE ] 如果 FILE 存在且属有效用户组则为真。
+[ -L FILE ] 如果 FILE 存在且是一个符号连接则为真。
+[ -N FILE ] 如果 FILE 存在 and has been mod如果ied since it was last read则为真。
+[ -S FILE ] 如果 FILE 存在且是一个套接字则为真。
+[ FILE1 -nt FILE2 ] 如果 FILE1 has been changed more recently than FILE2, or 如果 FILE1 exists and FILE2 does not则为真。
+[ FILE1 -ot FILE2 ] 如果 FILE1 比 FILE2 要老, 或者 FILE2 存在且 FILE1 不存在则为真。
+[ FILE1 -ef FILE2 ] 如果 FILE1 和 FILE2 指向相同的设备和节点号则为真。
+
+(2).字符串判断
+[ -z STRING ] 如果STRING的长度为零则为真 ，即判断是否为空，空即是真；
+[ -n STRING ] 如果STRING的长度非零则为真 ，即判断是否为非空，非空即是真；
+[ STRING1 = STRING2 ] 如果两个字符串相同则为真 ；
+[ STRING1 != STRING2 ] 如果字符串不相同则为真 ；
+[ STRING1 ]　 如果字符串不为空则为真,与-n类似
+
+(3).数值判断
+INT1 -eq INT2           INT1和INT2两数相等为真 ,=
+INT1 -ne INT2           INT1和INT2两数不等为真 ,<>
+INT1 -gt INT2            INT1大于INT1为真 ,>
+INT1 -ge INT2           INT1大于等于INT2为真,>=
+INT1 -lt INT2             INT1小于INT2为真 ,<</div>
+INT1 -le INT2             INT1小于等于INT2为真,<=
+
+(4).复杂逻辑判断
+-a 与
+-o 或
+! 非
+版权声明：本文为CSDN博主「一生只画眉」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/zhan570556752/article/details/80399154
