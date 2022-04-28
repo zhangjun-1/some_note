@@ -1,15 +1,15 @@
-比较字符串长度：
+1、比较字符串长度：
 如果V_number长度小于6为true：if [ ${#V_number} -lt 6 ]
 替换变量中的字符：
 去除V_number中的点：${V_number/./}（变量/被替换的内容/替换后的内容）
 
 
-sed替换><之间的内容（用于xml文件制作）
+2、sed替换><之间的内容（用于xml文件制作）
 sed -i 's#<version>.*</version>#<version>PANGEA V600R005C30B006</version>#g' filename
 
 
 
-grep命令
+3、grep命令
 -i 搜索时，忽略大小写
 -c 只输出匹配行的数量
 -n 列出所有的匹配行，显示行号
@@ -21,7 +21,7 @@ grep命令
 
 
 
-SCP免交互脚本：
+4、SCP免交互脚本：
 #!/bin/bash
 a="/usr1/Euler_compile_env_HGintel/Euler_compile_env/build/PANGEA-Mainline/vendor/NIC/out_put/OceanStor-Pacific_8.1.1_DPx204_nic_update.zip"
 b="/usr1/workspace/V6R5C30_HG_script_upload_cmc/zip_dir/"
@@ -47,7 +47,7 @@ expect -c "
 
 
 
-SCP免交互命令行：
+5、SCP免交互命令行：
 expect <<-END
 spawn scp -r 100.99.99.237:/root/.ssh/* /root/.ssh/
  expect {
@@ -61,7 +61,7 @@ END
 
 
 
-10/13位时间戳转换：
+6、10/13位时间戳转换：
 
 #!/bin/sh
 
@@ -110,7 +110,7 @@ fi
 
 
 
-时间转换为10位时间戳：date -d "2021-10-15 15:31:00" +%s
+7、时间转换为10位时间戳：date -d "2021-10-15 15:31:00" +%s
 时间转换为13位时间戳：
 
 #!/bin/sh
@@ -159,7 +159,7 @@ fi
 
 
 
-set指令能设置所使用shell的执行方式，可依照不同的需求来做设置
+8、set指令能设置所使用shell的执行方式，可依照不同的需求来做设置
 -a 　标示已修改的变量，以供输出至环境变量。 
 -b 　使被中止的后台程序立刻回报执行状态。 
 -C 　转向所产生的文件无法覆盖已存在的文件。 
@@ -182,7 +182,7 @@ set指令能设置所使用shell的执行方式，可依照不同的需求来做
 
 
 
-if条件表达式：
+9、if条件表达式：
 (1).文件/文件夹(目录)判断
 [ -b FILE ] 如果 FILE 存在且是一个块特殊文件则为真。
 [ -c FILE ] 如果 FILE 存在且是一个字特殊文件则为真。
