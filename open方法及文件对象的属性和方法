@@ -1,0 +1,51 @@
+with open('./test1.txt','r',encoding='utf8') as fp:
+    content = fp.read()
+
+和with同时使用，运行完自动关闭文件，无需写close（）
+
+
+open方法的mode类型：
+w     以写方式打开，
+a     以追加模式打开 (从 EOF 开始, 必要时创建新文件)
+r+     以读写模式打开
+w+     以读写模式打开 (参见 w )
+a+     以读写模式打开 (参见 a )
+rb     以二进制读模式打开
+wb     以二进制写模式打开 (参见 w )
+ab     以二进制追加模式打开 (参见 a )
+rb+    以二进制读写模式打开 (参见 r+ )
+wb+    以二进制读写模式打开 (参见 w+ )
+ab+    以二进制读写模式打开 (参见 a+ )
+
+来自 <https://blog.csdn.net/bbwangj/article/details/83753973?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_baidulandingword~default-1.pc_relevant_antiscanv2&spm=1001.2101.3001.4242.2&utm_relevant_index=4
+
+
+
+
+文件对象的属性和方法：
+f.close()：关闭文件对象f，并将属性f.closed设置为True
+f.closed：文件已关闭，则返回True
+f.encoding：bytes与str之间进行转换时使用的编码
+f.fileno()：返回底层文件的文件描述符（只对那些有文件描述符的文件对象是可用的）
+f.flush()：清空文件对象f，并将缓存中的内容写入磁盘（如果有）
+f.isatty()	：如果文件对象与控制台关联，就返回True（只有在文件对象应用了真正的文件时才是可用的）
+f.mode：文件对象打开时使用的模式
+f.name：文件对象f的文件名（如果有）
+f.newlines：文件文件f中的换行字符串的类型
+f.__next__()：返回文件对象f的下一行，大多数情况下，这种方法是隐式地使用的，比如对f中的行返回n个字节，而不移动文件指针的位置
+f.peek(n)：返回n个字节，而不移动文件指针的位置
+f.read(count)：从文件对象f中读取至多count个字节，如果没有指定count，就读取从当前文件指针直至最后的每个字节。以二进制模式读时，返回bytes对象；以文本模式读时，返回str对象。如果没有要读的内容（已到文件结尾），就返回一个空的bytes或str对象
+f.readable()：如果f已经打开等待读取，就返回True
+f.readinto(ba)：	将至多len(ba)个字节读入到bytearray ba中，并返回读入的字节数——如果在文件结尾，就为0（只有在二进制模式时才是可用的
+f.readline(count)：读取下一行（如果指定count，并且在\n字符前满足这一数值，那么至多读入count个字节），包括\n
+f.readlines(sizehint)：读入到文件结尾之前的所有行，并以列表形式返回。如果给定sizehint，那么至多读入大概sizehint个字节（如果底层文件对象支持）（这里有点问题，os有一属性DEFAULT_BUFFER_SIZE,其大小为8192（8K）字节，readlines()函数在每次读入的大小大约为DEFAULT_BUFFER_SIZE的一个近似值，并不是读入所有内容。）
+f.seek(offset,whence)：如果没有给定whence，或其为os.SEEK_SET,就按给定的offset移动文件指针(并作为下一次读、写的起点）；如果whence为os.SEEK_CUR,就相对于当前文件指针位置将其移动offset(可以为负值)个位置(whence为os.SEEK_END,则是相对文件结尾).在追加”a”模式下,写入总是在结尾处进行的,而不管文件指针在何处.在文本模式下,只应该使用tell()方法的返回值作为offset
+f.seekable()：如果f支持随机存取，就返回True
+f.tell();返回当前指针位置（相对文件起始处）
+f.truncate(size):	截取文件到当前文件指针所在位置，如果给定size，就到size大小处
+f.writable():如果f是为写操作而打开的，就返回True
+f.write(s):将bytes/bytearray对象s写入到文件（该文件以二进制模式打开），或者将str对象s写入到文件（该文件以文本模式打开）
+f.writelines(seq):	将对象序列（对文本文件而言是字符串，对二进制文件而言是字节字符串）写入到文件）
+————————————————
+版权声明：本文为CSDN博主「shadow_xwl」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/shadow_xwl/article/details/50495864
