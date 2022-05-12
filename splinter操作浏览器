@@ -1,0 +1,46 @@
+1、安装splinter库：
+    pip install splinter
+2、驱动安装：要使用splinter访问浏览器，还需要安装对应的浏览器驱动，这里以chrome为例，由于chrome WebDriver依赖于Selenium2，最终需要安装两个：即Selenium2和chromedriver
+    pip install selenium
+    在chrome浏览器访问：chrome://version/查看浏览器版本，然后访问http://chromedriver.storage.googleapis.com/index.html，找到对应的版本下载即可，下载后的exe文件放到任意一个环境变量
+  目录下即可。
+3、基础代码：
+from splinter.browser import Browser
+# from selenium.webdriver.chrome.options import Options
+import time
+import traceback
+
+b = Browser("chrome")   #实例化
+username = "admin"
+password = "admin"
+
+login_url = "http://10.29.174.151:8080/jenkins/login?from=%2Fjenkins%2F"
+
+b.driver.maximize_window()      #浏览器窗口最大化
+b.visit(login_url)      #访问指定链接
+b.fill('j_username','admin')    #填入账号密码
+b.fill('j_password','admin')
+b.find_by_name('Submit').click()    #找到name属性为'Submit'的标签并点击
+time.sleep(3)       #休眠3秒以等待页面刷新
+b.find_by_text('新一键式构建').click()    #找到text属性值为'新一键式构建'的标签并点击
+b.find_by_text('_RollBuild').click()
+b.find_by_text('V2R12C20_xnet_test').click()
+b.links.find_by_href('/jenkins/job/V2R12C20_xnet_test/build?delay=0sec').click()    #按标签链接查找
+a = b.find_by_name('parameter')     #找到当前页面所有名为'parameter'的标签，并赋值给变量a
+a[0].find_by_name('value').fill('ssh://git@codehub-dg-y.huawei.com:2222/it-storage-pangea-enterprise/IT-Storage-PANGEA-OneTrack/PANGEA-Mainline.git')       
+a[1].find_by_name('value').fill('master_xnet')      #对a中第二个元素进行操作，索引为1
+a[2].find_by_name('value').fill('release')
+a[3].find_by_name('value').fill('master_812')
+b.find_by_id('yui-gen3-button').click()
+
+4、页面操作：
+    b.find_by_tag('h1').mouse_over()    #鼠标移动到某个元素上
+    b.find_by_tag('h1').mouse_out()     #鼠标移开
+    b.find_by_tag('h1').double_click()  #鼠标双击事件
+    b.find_by_tag('h1').right_click()   #鼠标右键点击
+    
+    draggable = b.find_by_tag('h1')
+    target = b.find_by_css('.container')
+    draggable.drag_and_drop(target)     #鼠标拖曳事件
+
+  
