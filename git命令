@@ -42,4 +42,6 @@ git中一些选项解释:
              git push：把更新后的本地仓库推送到远程个人仓库
        
        
-       
+4、git配置相关：
+	文件名太长报错：Filename too long；gitconfig配置文件core段中添加参数：longpaths = true
+
