@@ -11,9 +11,15 @@ docker run -it --privileged 镜像ID /bin/bash:启动并进入容器，--privile
 docker exec -it 81c58a382199 /bin/bash --login：进入已启动的容器
 
 docker image pull 镜像地址：从docker镜像仓拉取到本地，配置镜像仓（/etc/docker/下新增daemon.json后重启docker服务，docker版本过低不支持）
-
+镜像导入导出：
 docker save -o [tar包名字].tar [镜像ID]     #保存为镜像文件后可在机器间互传
 docker load < [tar包名字].tar               #tar包导入为镜像文件
+
+容器导入导出：
+docker export -o [tar包名字].tar [容器ID]
+docker import [tar包名字].tar [镜像名字]
+
+
 
 
 重启docker
