@@ -1,0 +1,54 @@
+1、建立虚拟FTP用户数据库文件
+    cd /etc/vsftpd
+    vim vuser.list      #用于生成FTP用户数据库的原始账号和密码文件
+        username1
+        passwd1
+        username2
+        passwd2
+    db_load -T -t hash -f vuser.list vuser.lidb   #使用db_load命令用HASH算法生成FTP用户数据库文件
+    chmod 600 vuser.db      #FTP用户数据库内容很敏感，所以权限给小一点
+    rm -f vuser.list        #删除原始账号和密码文件
+2、创建FTP根目录及虚拟用户映射的系统用户
+    useradd -d /var/ftproot -s /sbin/nologin virtual        #创建用户virtual并设置为不允许登录系统并定义该用户的家目录
+    ls -ld /var/ftproot     #查看该用户的家目录权限
+    chmod -Rf 755 /var/ftproot      #为保证其他用户可以访问，给予权限
+3、建立支持虚拟用户的PAM认证文件
+    vim /etc/pam.d/vsftp.vu
+        auth required pam_userdb.so db=/etc/vsftpd/vuser        #参数db用于指向刚刚生成的vuser.b文件，但不要写后缀
+        account required pam_userdb.so db=/etc/vsftpd/vuser
+4、在vsftpd.conf文件中添加支持配置
+    vim /etc/pam.d/vsftp.conf
+        listen_port=3306
+        anonymous_enable=NO
+        local_enable=YES
+        write_enable=YES
+        local_umask=022
+        
+        dirmessage_enable=YES
+        xferlog_enable=YES
+        connect_from_port_20=YES
+        xferlog_std_format=YES
+        listen=NO
+        listen_ipv6=YES
+        guest_enable=YES
+        guest_username=virtual
+        allow_writeable_chroot=YES
+        pam_service_name=vsftpd.vu
+        userlist_deny=YES
+        userlist_enable=YES
+        tcp_wrappers=YES
+5、为虚拟用户设置不同的权限
+    vim /etc/vsftpd/vsftpd.conf     
+        user_config_dir=/etc/vsftpd/vuser_dir       #指定用户独立的权限配置文件存放的目录
+    mkdir /etc/vsftpd/vusers_dir                    #创建用户独立的权限配置文件存放的目录
+    cd /etc/vsftpd/vusers_dir
+    touch username1
+    vim username2                                   #创建用户配置文件，为username2指定具体权限
+        anon_upload_enable=YES
+        anon_mkdir_write_enable=YES
+        anon_other_write_enable=YES
+6、重启vsftpd服务，验证实现效果
+    systemctl restart vsftpd
+    使用FTP客户端尝试登入FTP服务
+    ftp 服务端IP [ftp端口](默认21不用写)
+        此时使用username2及密码就能登录并操作文件，username1只能登录没权限读写等，（若失败判断是否为selinux问题）
