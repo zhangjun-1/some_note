@@ -36,3 +36,15 @@ docker commit 容器ID 100.99.53.224:5000/euleros_compile：[tag]
 docker复制文件到容器内以及从容器内复制文件到宿主机
 从容器里面拷文件到宿主机：docker cp [容器名]:要拷贝的文件在容器里的路径 要拷贝到宿主机的路径
 从宿主机拷贝文件到容器里：docker cp 文件在宿主机的路径 [容器名]:要拷贝到容器里的路径 
+
+
+
+
+不删除容器的情况下给当前容器添加端口映射
+docker stop 容器：先停止当前容器
+systemctl stop docker ：停止docker服务
+cd /var/lib/docker/containers/******：进入容器配置文件目录，*****为容器ID开头的目录
+vim hostconfig.json：修改"PortBindings"内容，格式："PortBindings":{"22/tcp":[{"HostIp":"","HostPort":"9922"}],"3306/tcp":[{"HostIp":"","HostPort":"3306"}],"80/tcp":[{"HostIp":"","HostPort":"9980"}],"9200/tcp":[{"HostIp":"","HostPort":"9200"}],"9300/tcp":[{"HostIp":"","HostPort":"9300"}]}
+前面为容器端口后面为宿主机端口
+vim config.v2.json：修改"ExposedPorts"内容，格式"ExposedPorts":{"22/tcp":{},"3306/tcp":{},"80/tcp":{},"9200/tcp":{},"9300/tcp":{}}
+添加完后启动docker，启动容器查看端口映射情况
