@@ -1,16 +1,17 @@
 import xlrd
-
+#读取excel对象
 data1 = xlrd.open_workbook(r'C:\Users\zwx1104356\Documents\llzh.xlsx')
 
 data2 = xlrd.open_workbook(r'C:\Users\zwx1104356\Documents\ssqk.xlsx')
+#读取每个表第一个sheet页
 table1 = data1.sheet_by_index(0)
 table2 = data2.sheet_by_index(0)
 #data.sheet_loaded(0)
 #table1.row_len(0)
-
+#返回以第一列的值为列表
 list_ll = table1.col_values(0,start_rowx=0,end_rowx=None)
 list_ss = table2.col_values(0,start_rowx=0,end_rowx=None)
-
+#列表中的每个字符串转换为列表
 list1_ll = []
 for i in list_ll:
     list1_ll.append(i.split(','))
@@ -19,7 +20,7 @@ list2_ss = []
 for i in list_ss:
     list2_ss.append(i.split(','))
 
-
+#列表中的每个列表元素转换为集合
 list1 = []
 for i in list1_ll:
     list1.append(set(i))
