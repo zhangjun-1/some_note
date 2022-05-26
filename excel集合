@@ -34,4 +34,12 @@ for i in list1:
     for j in list2:
         if i.issubset(j):
             num = num + 1
-            print(i,num)
+            list_set.append(i)
+
+#结果列表元素转换为字符串
+list_str = []
+for i in list_set:
+    list_str.append(','.join(i))
+#Counter遍历所以元素并打印出现次数
+Counter(list_str)
+
