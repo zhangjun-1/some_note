@@ -34,3 +34,4 @@ for i in list1:
     for j in list2:
         if i.issubset(j):
             num = num + 1
+            print(i,num)
