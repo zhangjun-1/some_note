@@ -3,17 +3,16 @@ from collections import Counter
 from functools import reduce
 #读取excel对象
 data1 = xlrd.open_workbook(r'C:\Users\zwx1104356\Documents\llzh.xlsx')
-
 data2 = xlrd.open_workbook(r'C:\Users\zwx1104356\Documents\ssqk.xlsx')
 #读取每个表第一个sheet页
 table1 = data1.sheet_by_index(0)
 table2 = data2.sheet_by_index(0)
-#data.sheet_loaded(0)
+#返回第一行有效单元格数
 #table1.row_len(0)
-#返回以第一列的值为列表
+#返回以第一列的值为元素的列表
 list_ll = table1.col_values(0,start_rowx=0,end_rowx=None)
 list_ss = table2.col_values(0,start_rowx=0,end_rowx=None)
-#列表中的每个字符串转换为列表
+#将列表中的每个字符串元素转换为列表元素
 list1_ll = []
 for i in list_ll:
     list1_ll.append(i.split(','))
@@ -21,7 +20,6 @@ for i in list_ll:
 list2_ss = []
 for i in list_ss:
     list2_ss.append(i.split(','))
-
 #对每个列表元素进行排序，方便后面求和
 list_sort1 = []
 for i in list1_ll:
@@ -45,7 +43,7 @@ list_set = []
 #     for j in list2:
 #         if i.issubset(j):
 #             num = num + 1
-
+#将列表元素转换为集合元素进行子集判断，计算list_sort1中的集合元素在list_sort2中作为集合元素子集的次数
 for i in list_sort1:
     for j in list_sort2:
         if set(i).issubset(set(j)):
@@ -56,9 +54,8 @@ for i in list_sort1:
 list_str = []
 for i in list_set:
     list_str.append(','.join(i))
-#Counter遍历所以元素并打印出现次数
+#Counter遍历所有元素并打印出现次数
 x = Counter(list_str)
 dict1 = dict(x)
-
-
+#字典所有value值求和
 print(reduce(lambda x,y:x + y,dict1.values()))
