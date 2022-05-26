@@ -1,0 +1,35 @@
+import xlrd
+
+data1 = xlrd.open_workbook(r'C:\Users\zwx1104356\Documents\llzh.xlsx')
+
+data2 = xlrd.open_workbook(r'C:\Users\zwx1104356\Documents\ssqk.xlsx')
+table1 = data1.sheet_by_index(0)
+table2 = data2.sheet_by_index(0)
+#data.sheet_loaded(0)
+#table1.row_len(0)
+
+list_ll = table1.col_values(0,start_rowx=0,end_rowx=None)
+list_ss = table2.col_values(0,start_rowx=0,end_rowx=None)
+
+list1_ll = []
+for i in list_ll:
+    list1_ll.append(i.split(','))
+
+list2_ss = []
+for i in list_ss:
+    list2_ss.append(i.split(','))
+
+
+list1 = []
+for i in list1_ll:
+    list1.append(set(i))
+
+list2 = []
+for i in list2_ss:
+    list2.append(set(i))
+
+num = 0
+for i in list1:
+    for j in list2:
+        if i.issubset(j):
+            num = num + 1
