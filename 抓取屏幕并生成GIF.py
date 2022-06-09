@@ -13,6 +13,8 @@ while n < m:
     n = n + 1
 #读取生成的图片并排序
 listjpg = [x for x in os.listdir() if re.search(r'jpg$',x)]
+'''列表字符串元素固定位置为数字，以"."为分隔符，在数字后面
+可以使用两个字符为分隔符，分别为数字前后的字符，例：a，b分别为数字前后的字符 listjpg.sort(key= lambda x:int(x.split('b')[0].split('a')[1]))'''
 listjpg.sort(key= lambda x:int(x.split('.')[0]))
 #生成gif
 im = Image.open('1.jpg')
