@@ -1,0 +1,12 @@
+1、给root用户添加远程连接权限
+  use mysql;
+  update user set host=' %' where user=' root';
+  flush privileges;
+2、新建用户
+  create user 'zhangjun'@'%' identified by '123456';
+3、查看用户权限
+  show grants for zhangjun;
+4、查看mysql当前连接
+  show processlist;只列出前100条，如果想全列出请使用show full processlist;
+5、显示数据表的属性，属性类型，主键信息 ，是否为 NULL，默认值等其他信息
+  show columns from tables;
