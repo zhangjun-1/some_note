@@ -53,11 +53,17 @@ spawn scp -r 100.99.99.237:/root/.ssh/* /root/.ssh/
  expect {
        "*yes/no" {  send "yes\r" 
          exp_continue}
-         "*assword:" { send "huawei@123\r"} 
+         "*assword:" { send "12345678\r"} 
      }
      set timeout -1
   expect eof
 END
+#免交互挂载目录
+#!/usr/bin/expect
+spawn mount //7.222.118.251/x86v6/DP2210 /usr1/agentPath/x86v6/2288H
+expect "*assword"
+send "12345678\n"
+expect eof
 
 
 
