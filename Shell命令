@@ -234,3 +234,44 @@ INT1 -le INT2             INT1小于等于INT2为真,<=
 ! 非
 版权声明：本文为CSDN博主「一生只画眉」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
 原文链接：https://blog.csdn.net/zhan570556752/article/details/80399154
+
+
+10、查询java各个线程下的线程数情况
+for pid in $(ps -ef|grep -v grep|grep "java"|awk '{print $2}');do echo ${pid} > /tmp/a.txt;cat /proc/${pid}/status|grep Threads > /tmp/b.txt;paste /tmp/a.txt /tmp/b.txt;done|sort -k3 -rn;
+paste命令：paste file1 file2 :并列打印两个文件，paste -s file：行列转置打印文件内容
+
+
+
+11、awk命令使用
+每天学习一个命令：awk 处理文本
+http://einverne.github.io/post/2018/01/awk.html
+    
+    awk打印类似有"()","<>"符号作为分隔符的文本：awk -F '[<>]'或'[()]' 
+awk 内置变量的使用
+    awk 除了 $ 和数字表示字段还有一些其他的内置变量：
+    $0 这个表示文本处理时的当前行，$1 表示文本行被分隔后的第 1 个字段列，$2 表示文本行被分割后的第 2 个字段列，$3 表示文本行被分割后的第 3 个字段列，$n 表示文本行被分割后的第 n 个字段列
+    NR 表示文件中的行号，表示当前是第几行
+    NF 表示文件中的当前行被分割的列数，可以理解为 MySQL 数据表里面每一条记录有多少个字段，所以 $NF 就表示最后一个字段，$(NF-1) 就表示倒数第二个字段
+    FS 表示 awk 的输入分隔符，默认分隔符为空格和制表符，可以对其进行自定义设置
+    OFS 表示 awk 的输出分隔符，默认为空格，也可以对其进行自定义设置
+    FILENAME 表示当前文件的文件名称，如果同时处理多个文件，它也表示当前文件名称
+    RS 行分隔符，用于分割行，默认为换行符
+    ORS 输出记录的分隔符，默认为换行符
+awk条件判断操作符：
+    < 小于
+    <= 小于或等于
+    == 等于
+    != 不等于
+    > 大于
+    >= 大于或等于
+    ~ 匹配正则表达式
+    !~ 不匹配正则表达式
+    例：以':'为分隔符打印/etc/passwd里最后一列为'/bin/bash'的行：awk -F ':' '$NF == "/bin/bash" {print $0}' /etc/passwd
+使用 awk 过滤 history 输出，找到最常用的命令：history | awk '{a[$2]++}END{for(i in a){print a[i] " " i}}' | sort -rn | head
+过滤文件中重复行：awk '!x[$0]++' <file>
+将一行长度超过 72 字符的行打印：awk 'length>72' file
+查看最近哪些用户使用系统：last | grep -v "^$" | awk '{ print $1 }' | sort -nr | uniq -c
+假设有一个文本，每一行都是一个 int 数值，想要计算这个文件每一行的和，可以使用：awk '{s+=$1} ENG {printf "%.0f", s}' /path/to/file
+
+
+
