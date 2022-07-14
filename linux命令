@@ -87,6 +87,81 @@ setfacl:用于增加或修改ACL规则    getfacl:用于显示文件acl规则
       -b  删除acl规则
 
 
+11、AWK对文件的"某一列进行去重"的做法 (命令: awk '{a[$n]=$0}END{for(i in a)print a[i]}' filename)
+
+
+12、rsync命令使用：（https://einverne.github.io/post/2017/07/rsync-introduction.html）
+    拷贝本地文件：rsync -ahvz backup.tar.gz  /backups/  # DESC 不存在时自动创建
+    同步目录：rsync -avzh /home/src /backups/files/   #如果目标地址没有 src 目录，rsync 会自动创建该文件夹。
+               rsync -avz /home/src/ /backups/files/ #SRC 路径末尾的/表示不自动创建 DEST 文件夹，在man rsync中的解释就是末尾的/表示”拷贝当前目录下的文件” ，而不是”拷贝当前的目录”.
+    远程 shell 拷贝到远程：rsync -avz /local/path/  user@remoteip:/path/to/files/
+    远程 shell 拷贝到本地：rsync -avz user@remoteip:/home/user/src  ./src
+    远程 rsync 服务器拷贝到本地：rsync -av user@remoteip::www  /databack
+    拷贝本地文件到远程：rsync -av /databack user@remoteip::www
+    文件列表：rsync -v rsync://remoteip /www
+    参数：--ignore-existing：要求只更新目标端不存在的文件。-existing：要求只更新目标端已存在的文件
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
