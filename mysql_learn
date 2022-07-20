@@ -10,3 +10,4 @@
   show processlist;只列出前100条，如果想全列出请使用show full processlist;
 5、显示数据表的属性，属性类型，主键信息 ，是否为 NULL，默认值等其他信息
   show columns from tables;
+6、中文显示？设置：alter table table_name convert to character set utf8;原来有的数据不会变，新增数据正常显示
