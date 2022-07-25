@@ -45,3 +45,12 @@ git中一些选项解释:
 4、git配置相关：
 	文件名太长报错：Filename too long；gitconfig配置文件core段中添加参数：longpaths = true
 
+
+5、个人fork仓与主仓同步：（所有分支同步：删除fork仓再fork）
+			同步指定分支：git remote -v：查看远程仓库路径，若没有主仓路径则执行：git remote add upstream 主仓地址 ：添加远程主仓路径
+		        git status：查看本地是否有未提交的修改
+		        git fetch upstream：若没有未提交的修改，则执行命令抓取远程主仓库的更新
+		         git checkout master：切换到master分支（具体分支按需切换）
+		         git merge upstream/master：合并远程主仓的master到本地仓库
+		       git push：把更新后的本地仓库推送到远程个人仓库
+
