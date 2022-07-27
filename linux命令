@@ -104,8 +104,21 @@ setfacl:用于增加或修改ACL规则    getfacl:用于显示文件acl规则
 
 
 
+13、Centos单用户模式（场景：超级管理员密码忘记）
+https://blog.csdn.net/AhhSong/article/details/77073733
 
 
+
+14、xargs使用
+按照指定分隔符分割字符串： echo “wuhs@sunr@sunr@wuhs@wuzy” |xargs -d@
+删除查找到的文件： find . -name test.txt |xargs rm -rf
+将查找到的文件打包：find . -type f -name “*.cfg” |xargs tar -zcvf cfg.tar.gz
+批量复制文件到指定目录：find . -type f -name ".txt” |xargs -n1 -I {} cp {} /home
+删除文件名包含空格的文件（find特别参数-print0指定输出的文件以null分隔）：find . -type f -name abc* -print0 |xargs -0 rm
+打印待执行命令确认后执行（-p参数）：find . -type f -name 2.txt |xargs -p rm
+打印最终执行命令但不做确认（-t参数）：find . -type f -name 1.txt |xargs -t rm
+批量创建目录：echo “one two there” |xargs mkdir
+将命令参数传递给多个命令（-I参数）：cat 3.txt |xargs -I file sh -c ‘echo file;mkdir file’
 
 
 
