@@ -11,3 +11,56 @@
 5、显示数据表的属性，属性类型，主键信息 ，是否为 NULL，默认值等其他信息
   show columns from tables;
 6、中文显示？设置：alter table table_name convert to character set utf8;原来有的数据不会变，新增数据正常显示
+
+7、使用LIKE+通配符%表示任意个字符，_表示单个字符
+
+8、使用MySQL正则表达式
+  REGEXP关键字+表达式：select * from table1 where id regexp '.123';（.表示匹配任意一个字符）
+  mysql自3.23.4版本后正则不区分大小写，若需要区分使用BINARY关键字：select * from table1 where name regexp binary 'JetPack';
+  OR匹配：select * from table1 where name regexp 'JetPack|Mary|jack';
+  匹配几个字符之一，匹配任意单个字符：select * from table1 where name regexp '[123] ton';（匹配1 ton,2 ton或3 ton，[^123]表示匹配除这些字符外的任意字符）
+  转义特殊字符使用\\:\\f换页，\\n换行，\\r回车，\\t制表，\\v纵向制表，\\\匹配反斜杠本身
+  匹配字符类：[:alnum:]  任意字母和数字（同[a-zA-Z0-9]）
+             [:alpha:]  任意字母（同[a-zA-Z]）
+             [:blank:]  空格和制表（同[\\t]）
+             [:cntrl:]  ASCII控制字符（ASCII0到31和127）
+             [:digit:]  任意数字（同[0-9]）
+             [:print:]  任意可打印字符
+             [:graph:]  与[:print:]形同，但不包括空格
+             [:lower:]  任意小写字母（同[a-z]）
+             [:punct:]  既不在[:alnum:]又不在[:cntrl:]中的任意字符
+             [:space:]  包括空格在内的任意空白字符（同[\\f\\\n\\r\\t\\v]）
+             [:upper:]  任意大写字母（同[A-Z]）
+             [:xdigit:] 任意十六进制数字（同[a-fA-F0-9]）
+  重复元字符：*  0个或多个匹配
+             +  1个或多个匹配（等于{1,}）
+             ?  0个或1个匹配（等于{0,1}）
+             {n}  指定数目的匹配
+             {n,} 不少于指定数目的匹配
+             {n,m}  匹配数目的范围（m不超过255）
+             例：select name from table1 where name regexp '\\([0-9] sticks?\\)';s后面的?使s可选，所以会匹配stick和sticks
+                select name from table1 where id regexp '[[:digit:]]{4}';匹配连在一起的四位数字
+  定位与字符：^  文本的开始（两种用法在集合[]里表示否定该集合，否则指串的开始处）
+             $  文本的结尾
+             [[:<:]]  词的开始
+             [[:>:]]  词的结尾
+       
+9、拼接字段：（多数DBMS使用+或||实现拼接，而mysql使用concat()函数来实现）
+            select concat(name,' (',city,')') from table1 order by name;（concat()函数使用,将多个字符串分隔）
+            Trim()函数去掉串左右两边的空格，rtrim去掉右边的空格，ltrim去掉左边的空格
+            
+10、执行算术计算：select name,id,salary,id*salary as money from staff where name regexp '[^a-zA_Z]';（+,-,*,/）
+
+11、文本处理函数：upper()  转换为大写
+                lower()  转换为小写
+                left(str,lenght)  返回串左边指定长度的字符
+                right(str,lenght)  返回串右边指定长度的字符
+                length() 返回串的长度
+                locate() 找出串的一个子串
+                substring(str, pos, length)  返回从指定位置开始指定长度的字符串，不指定长度就到结尾
+                soundex()  返回串的SOUNDEX值
+            
+             
+
+  
+  
