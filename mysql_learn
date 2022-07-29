@@ -91,6 +91,14 @@
                 Sqrt()  返回一个数的平方根
                 Tan()  返回一个角度的正切
        
+14、聚集函数：AVG()  返回某列的平均值,只用于单个列并且会忽略值为null的行，若需求不忽略null可使用avg(ifnull(column_name,0))
+             COUNT()  返回某列的行数,使用count(*)对表的所有行计数，使用count(column_name)只对有值的行计数忽略null值
+             MAX()  返回某列的最大值，忽略值为null的行
+             MIN()  返回某列的最小值，忽略值为null的行
+             SUM()  返回某列值之和，忽略值为null的行
+             示例：select AVG(prod_price) as avg_price from products where vend_id = 1003;
+                 
+15、DISTINCT去重：对单列去重也可对多列去重，对多列去重时去除指定的列值都一样的行：select distinct name,address,id form table1;（去重name,address,id三列值都一样的行）
            
              
 
