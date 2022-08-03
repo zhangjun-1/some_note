@@ -274,4 +274,8 @@ awk条件判断操作符：
 假设有一个文本，每一行都是一个 int 数值，想要计算这个文件每一行的和，可以使用：awk '{s+=$1} ENG {printf "%.0f", s}' /path/to/file
 
 
+12、shell中变量声明local、global、export
+        local一般用于局部变量声明，在函数内使用
+        global其作用域从被定义的地方开始，到shell结束或被显示删除的地方为止。
+        export将自定义变量设定为系统环境变量（仅限于该次登陆操作，当前shell中有效）
 
