@@ -1,9 +1,15 @@
 import os
 
-os.popen("echo '<?xml version=1.0 encoding=utf-8 ?>\n<Product>\n<Type>PANGEA</Type>\n<Version>PANGEA</Version>\n' >> ../05023WPG.xml")
+os.popen("echo '<?xml version=1.0 encoding=utf-8 ?>\n"
+         "<Product>\n"
+         "<Type>PANGEA</Type>\n"
+         "<Version>PANGEA</Version>\n' >> ../05023WPG.xml")
 
 for i in os.listdir():
-    file_sha256 = os.popen(f"sha256sum {i}").readline().split()[0]      #os.popen().readline()获取执行命令的返回值，split()[0]获取按空格划分字符串的列表的第一个值即文件sha256值
-    os.popen(f"echo '<File>\n<FilePath>./{i}</FilePath>\n<SHAValue>{file_sha256}</SHAValue>\n</File>\n' >> ../05023WPG.xml")
+    file_sha256 = os.popen(f"sha256sum {i}").readline().split()[0]
+    os.popen("echo -e '<File>\n"
+             f"<FilePath>./{i}</FilePath>\n"
+             f"<SHAValue>{file_sha256}</SHAValue>\n"
+             "</File>\n' >> ../05023WPG.xml")
 
 os.popen("echo '</Product>' >> ../05023WPG.xml")
