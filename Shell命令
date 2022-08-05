@@ -221,12 +221,12 @@ fi
 [ STRING1 ]　 如果字符串不为空则为真,与-n类似
 
 (3).数值判断
-INT1 -eq INT2           INT1和INT2两数相等为真 ,=
-INT1 -ne INT2           INT1和INT2两数不等为真 ,<>
-INT1 -gt INT2            INT1大于INT1为真 ,>
-INT1 -ge INT2           INT1大于等于INT2为真,>=
-INT1 -lt INT2             INT1小于INT2为真 ,<</div>
-INT1 -le INT2             INT1小于等于INT2为真,<=
+[ INT1 -eq INT2 ]            INT1和INT2两数相等为真 ,=
+[ INT1 -ne INT2 ]           INT1和INT2两数不等为真 ,<>
+[ INT1 -gt INT2 ]            INT1大于INT1为真 ,>
+[ INT1 -ge INT2 ]           INT1大于等于INT2为真,>=
+[ INT1 -lt INT2 ]             INT1小于INT2为真 ,<</div>
+[ INT1 -le INT2 ]             INT1小于等于INT2为真,<=
 
 (4).复杂逻辑判断
 -a 与
@@ -278,4 +278,83 @@ awk条件判断操作符：
         local一般用于局部变量声明，在函数内使用
         global其作用域从被定义的地方开始，到shell结束或被显示删除的地方为止。
         export将自定义变量设定为系统环境变量（仅限于该次登陆操作，当前shell中有效）
+
+
+13、双括号(())的使用
+        扩展Shell中的算术运算,以及赋值运算,扩展for,while,if条件测试运算.
+        1.在双括号结构中,所有的表达式可以像c语言一样,如a++,b--
+        2.在双括号结构中,所有变量可以不加入$符号前缀,也可以加入.
+        3.在双括号可以进行逻辑运算,四则运算,而且运算符合数值之间可以没有空格,也可以有空格.
+        4.双括号结构扩展了for,while,if条件测试运算.
+        5.支持多个表达式运算,各个表达式之间用逗号,分开.
+        6.使用[]时必须保证运算符与数值之间有空格,而(())时数值与运算符可以没有空格.
+        例：计算0-100的和
+           #!/bin/bash
+           sum=0
+           a=0
+           while ((a<101))
+           do
+             ((a++))
+             ((sum=sum+a))
+           done
+           echo $sum
+
+
+14、循环使用：
+            1、while循环：条件不符合时停止
+            例：#!/bin/bash
+                while [ "$a" != "yes" -a "$a" != YES" ]
+                do
+                  read -p "Please input yes/YES to stop:" a
+                done
+                echo "stoped"
+             2、until循环：和while相反，条件成立时终止
+             例：#!/bin/bash
+                 until [ "$a" == "yes -0 "$a" == "YES" ]
+                 do
+                   read -p "Please input yes/YES to stop:" a
+                 done
+                 echo "Stoped"
+             3、for循环：
+             例：#!/bin/bash
+                 #列出当前目录文件
+                 filelist=$(ls)
+                 for filename in $filelist
+                 do
+                   echo $filename
+                 done
+             例：for数值循环
+                #!/bin/bash
+                sum=0
+                for ((i=0;i<=100;i++))
+                do
+                  sum=$(($sum+$i))
+                done
+                echo "sum is :" $sum
+                
+                 
+             
+                
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
