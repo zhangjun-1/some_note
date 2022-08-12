@@ -100,6 +100,29 @@
                  
 15、DISTINCT去重：对单列去重也可对多列去重，对多列去重时去除指定的列值都一样的行：select distinct name,address,id form table1;（去重name,address,id三列值都一样的行）
            
+16、UNION (ALL)：组合多条查询，默认去重，如果需要不去重加上ALL，使用排序时只能在最后一条select语句加order by字句，不允许使用多条order by
+            
+17、启用全文本搜索支持，一般在创建表时使用FULLTEXT字句启用,MyISAM引擎支持全文本搜索，默认使用的InnoDB引擎不支持。不要再导入数据时使用FULLTEXT，应该先导入所有数据，然后再修改表定义
+    FULLTEXT，花费时间更少
+      定义示例：CREATE TABLE table_name
+               (note_id int NOT NULL AUTO_INCREMENT,
+                prod_id char(10) NOT NULL,
+                note_date datetime NOT NULL,
+                note_text text NULL,
+                PRIMARY KEY(note_id),
+                FULLTEXT(note_text)) ENGINE=MyISAM;
+      使用示例：select note_text from table_name where Match(note_text) Against('rabbit');默认不区分大小写，使用BINARY区分
+      
+18、查看数据表状态（引擎、创建时间、更新时间等）：SHOW TABLE STATUS FROM db_name WHERE NAME='table_name';
+
+19、修改数据表引擎：alter table table_name engine=innodb;  
+                  alter table table_name engine=myisam;
+                 
+ 
+                 
+                
+            
+           
              
 
   
