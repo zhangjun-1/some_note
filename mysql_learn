@@ -112,13 +112,38 @@
                 PRIMARY KEY(note_id),
                 FULLTEXT(note_text)) ENGINE=MyISAM;
       使用示例：select note_text from table_name where Match(note_text) Against('rabbit');默认不区分大小写，使用BINARY区分
+   注意事项：
+          1.在索引全文本数据时，短词被忽略且从索引中排除。短词定义为 那些具有3个或3个以下字符的词（如果需要，这个数目可以更改）。
+          2.MySQL带有一个内建的非用词（stopword）列表，这些词在索引全文本数据时总是被忽略。如果需要，可以覆盖这个列表
+          3.许多词出现的频率很高，搜索它们没有用处（返回太多的结果）。 因此，MySQL规定了一条50%规则，如果一个词出现在50%以上 的行中，则将它作为一个非用词忽略。50%规则不用于IN BOOLEAN MODE。
+          4.如果表中的行数少于3行，则全文本搜索不返回结果（因为每个词 或者不出现，或者至少出现在50%的行中）
+          5.忽略词中的单引号。例如，don't索引为dont。
+          6.不具有词分隔符（包括日语和汉语）的语言不能恰当地返回全文本搜索结果。
+          7.仅在MyISAM数据库引擎中支持全文本搜索
       
-18、查看数据表状态（引擎、创建时间、更新时间等）：SHOW TABLE STATUS FROM db_name WHERE NAME='table_name';
+18、查询扩展：能找出可能相关的结果，即使它们并不精确包含所查找的词
+           使用方法：select note_text from table_name where Match(note_text) Against('anvils' WITH QUERY EXPANSION);
+          
+             
+19、布尔文本搜索：即使没有FULLTEXT索引也可以使用
+      操作符说明：+  包含，词必须存在
+                 -  排除，词必须不存在
+                 >  包含，而且增加等级值
+                 <  包含，且减少等级值
+                 () 把词组成子表达式（允许这些子表达式作为一个组被包含、排除、排序等）
+                 _  取消一个词的排序值
+                 *  词尾的通配符
+                 "" 定义一个短语（与单个词的列表不一样，它匹配整个短语以便包含或排除这个短语）
+          示例：匹配包含rabbit和bait的行：select note_text from table_name where Match(note_text) Against('+rabbit +bait' IN BOOLEAN MODE);
+               不指定操作符，匹配包含rabbit和bait中的至少一个词的行：select note_text from table_name where Match(note_text) Against('rabbit bait' IN BOOLEAN MODE);
+               匹配短语rabbit bait而不是匹配两个词：select note_text from table_name where Match(note_text) Against('"rabbit bait"' IN BOOLEAN MODE);
+               匹配rabbit和carrot，增加前者的等级，降低后者的等级：select note_text from table_name where Match('>rabbit <carrot' IN BOOLEAN MODE);
+               匹配safe和combination，降低后者的等级：select note_text from table_name where Match(note_text) Against('+safe +(combination)' IN BOOLEAN MODE);
+               
+20、查看数据表状态（引擎、创建时间、更新时间等）：SHOW TABLE STATUS FROM db_name WHERE NAME='table_name';
 
-19、修改数据表引擎：alter table table_name engine=innodb;  
+21、修改数据表引擎：alter table table_name engine=innodb; 
                   alter table table_name engine=myisam;
-                 
- 
                  
                 
             
