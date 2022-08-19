@@ -146,8 +146,28 @@
                   alter table table_name engine=myisam;
                  
                 
+22、insert一次插入多条数据：insert LOW_PRIORITY into table_name(col1,col2,col3,col4...) values(value1,value2,value3,value4...),(value11,value22,value33,value44...),...
+        注：LOW_PRIORITY降低插入语句的优先级，降低对查询语句的性能的影响；每个值括号里的数据顺序与列对应，这样比用多个单条插入性能高
+
+23、插入检出的数据，insert into table_name1(col1,col2,col3,col4...) select col1,col2,col3,col4... from table_name2;（确保主键不会重复）
+
+24、更新多个列：update table_name set col1 = 'xxx',col2 = 'xxxx' where colx = 'x';（不加where字句更新所有行，使用where前应先使用select对where子句测试确保正确）
+    IGNORE关键字：使用update是若发生错误则整个操作被取消（错误前更新的被恢复原值），使用IGNORE后即使发生错误也继续更新，用法update IGNORE table_name......
+    
+    
+25、删除数据：delete from table_name where col1 = 'xxx';（不加where字句删除所有行，使用where前应先使用select对where子句测试确保正确）
+    更快的删除：truncate table语句，删除所有行，实际上是删除原来的表并重新创建一个表，而不是逐行删除表中的数据
             
-           
+26、数据表的创建：
+    创建表时主键可以为多列且不能为null（null和空串不一样）
+    使用AUTO_INCREMENT设置该列自动自增（每个表只允许一个AUTO_INCREMENT列，而且它必须被索引），可以使用select last_insert_id()获取最后一个AUTO_INCREMENT的值
+    默认值：create table中使用DEFAULT关键字指定   例：quantity int NOT NULL DEFAULT 1,（quantity列为指定时使用1，mysql只支持常量）
+
+27、修改/更新表：
+    给表添加一个列：alter table table_name ADD col_name CHAR(20);
+    删除表中的一个列：alter table table_name drop column col_name;
+
+
              
 
   
