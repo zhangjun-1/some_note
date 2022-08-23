@@ -115,7 +115,8 @@
    注意事项：
           1.在索引全文本数据时，短词被忽略且从索引中排除。短词定义为 那些具有3个或3个以下字符的词（如果需要，这个数目可以更改）。
           2.MySQL带有一个内建的非用词（stopword）列表，这些词在索引全文本数据时总是被忽略。如果需要，可以覆盖这个列表
-          3.许多词出现的频率很高，搜索它们没有用处（返回太多的结果）。 因此，MySQL规定了一条50%规则，如果一个词出现在50%以上 的行中，则将它作为一个非用词忽略。50%规则不用于IN BOOLEAN MODE。
+          3.许多词出现的频率很高，搜索它们没有用处（返回太多的结果）。因此，MySQL规定了一条50%规则，如果一个词出现在50%以上的行中，则将它作为一个非用词忽略。50%规则
+            不用于IN BOOLEAN MODE。
           4.如果表中的行数少于3行，则全文本搜索不返回结果（因为每个词 或者不出现，或者至少出现在50%的行中）
           5.忽略词中的单引号。例如，don't索引为dont。
           6.不具有词分隔符（包括日语和汉语）的语言不能恰当地返回全文本搜索结果。
@@ -167,6 +168,80 @@
     给表添加一个列：alter table table_name ADD col_name CHAR(20);
     删除表中的一个列：alter table table_name drop column col_name;
 
+28、删除表：DROP table table_name;
+
+29、重命名表：RENAME table table_name1 to table_name2;
+
+30、视图：
+        为什么使用视图： 
+                     1、重用SQL语句
+                     2、简化复杂的SQL操作。在编写查询后，可以方便地重用它而不必知道它的基本查询细节。
+                     3、使用表的组成部分而不是整个表。
+                     4、保护数据。可以给用户授予表的特定部分的访问权限而不是整个表的访问权限。
+                     5、更改数据格式和表示。视图可返回与底层表的表示和格式不同的数据。
+        视图的规则和限制：
+                       1、与表一样，试图必须唯一命名（不能给视图取别的视图或表相同的名字）
+                       2、对于可以创建的视图数目没有限制
+                       3、为了创建视图必须具有足够的访问权限。这些限制通常由数据库管理人员授予。
+                       4、视图可以嵌套，即可以利用从其他视图中检索数据的查询来构造一个视图
+                       5、order by可以用在视图中，但如果从该视图检索数据select中也含有order by，那么该视图中的order by将被覆盖
+                       6、视图不能索引，也不能有关联的触发器或默认值。
+                       7、视图可以和表一起使用。例如，编写一条联结表和视图的select语句。
+        视图的使用：例：
+                     1、利用视图隐藏复杂的SQL，简化复杂的联结
+                        创建：CREATE VIEW productcustomers AS SELECT cust_name，cust_contact，prod_id 
+                             FROM customers，orders，orderitems 
+                             WHERE customers.cust_id = orders.cust_id
+                              AND orderitems.order_num = orders.order_num;
+                        使用：SELECT cust_name,cust_contact FROM productcustomers WHERE prod_id = 'TNT2';
+                     2、重新格式化检索出的数据
+                     3、用视图过滤不想要的数据（如果从视图检索数据时使用了一条where子句，则视图中的和传递给视图的两个where子句将自动组合）
+                     
+31、存储过程：一条或多条SQL语句的集合
+      为什么使用存储过程：
+                      1、通过把处理封装在容易使用的单元中，简化复杂的操作
+                      2、由于不要求反复建立一系列处理步骤，这保证了数据的完整性。如果所有开发人员和应用程序都使用同一存储过程，则所使用的代码都是相同的。这一点的延伸就是防止错误。
+                         执行的步骤越多，出错的可能性就越大。防止错误保证了数据的一致性。
+                      3、简化对变动的管理。如果表名，列名或业务逻辑等有变化，只需要更改存储过程的代码。使用它的人员甚至不需要知道这些变化。
+                      4、提高性能，因为使用存储过程比使用单独的SQL语句要快。
+                      5、存在一些只能用单个请求中的mysql元素和特性，存储过程可以使用它们来编写功能更强更灵活的代码
+       mysql将编写存储过程的安全和访问与执行存储过程的安全和访问区分开来。即使你不能（或不想）编写自己的存储过程，也可以在适当的时候执行别的存储过程
+      执行存储过程：CALL productpricing(@pricelow,
+                                       @pricehigh,
+                                       @priceaverage);执行名为productpricing的存储过程，它计算并返回产品的最低价、最高价和平均价格
+      创建存储过程：CREATE PROCEDURE productpricing()
+                   BEGIN
+                      SELECT Avg(prod_price) AS priceaverage
+                      FROM product;
+                   END;如果存储过程接受参数，它们将在()中列举出来。没有参数后面的()仍然需要。BEGIN和END限定存储过程体。
+         注：如果使用mysql命令行创建存储过程由于;作为语句分隔符会导致创建失败出现语法错误，为了避免错误上述语句可以进行如下修改
+                   DELIMITER //
+                   CREATE PROCEDURE productpricing()
+                   BEGIN
+                      SELECT Avg(prod_price) AS priceaverage
+                      FROM product;
+                   END//
+                   DELIMITER ;
+          DELIMITER //告诉命令行//作为新的语句分隔符，创建完成后再使用DELIMITER ;修改回;，注意DELIMITER后必须有空格，内部例如END后不能加空格。除\外任何字符都可作为语句分隔符
+    删除存储过程：DROP PROCEDURE productpricing;
+                 DROP PROCEDURE IF EXISTS productpricing;仅当存在时删除
+     存储过程参数使用：不显示结果，将结果返回给指定的变量
+                     CREATE PROCEDURE productpricing(
+                        OUT pl DECIMAL(8,2),        #关键字OUT指出传出一个值返回给调用者，同时存储过程支持IN（传递给存储过程）和INOUT（对存储过程传入和传出）
+                        OUT ph DECIMAL(8,2),
+                        OUT pa DECIMAL(8,2)
+                     )
+                     BEGIN
+                        SELECT Min(prod_price)
+                        INTO pl                        #通过INTO关键字保存到相应变量
+                        FROM products;
+                        SELECT Max(prod_price)
+                        INTO ph
+                        FROM products;
+                        SELECT Avg(prod_price)
+                        INTO pa
+                        FROM products;
+                     END;   
 
              
 
