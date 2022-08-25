@@ -242,6 +242,23 @@
                         INTO pa
                         FROM products;
                      END;   
+          调用上述存储过程：CALL productpricing(@pricelow,
+                                              @pricehigh,
+                                              @priceaverage);
+                                              参数名无需和存储过程里写的一样，个数须一致
+                                              调用时这条语句并不显示任何数据，为了显示检索出的数据，使用select @pricelow,@pricehigh,@priceaverage;
+                  CREATE PROCEDURE ordertotal(
+                      IN onumber INT,
+                      OUT ototal DECIMAL(8,2))
+                  BEGIN
+                    SELECT Sum(item_price*quantity)
+                    FROM orderitems
+                    WHERE order_num = onumber
+                    INTO ototal;
+                  END;
+                  此存储过程中既有需要传入的参数，也有要返回的参数，调用语句如下：
+                  CALL ordertotal(20005,@total);
+                  必须传递两个参数
 
              
 
