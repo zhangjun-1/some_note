@@ -259,8 +259,47 @@
                   此存储过程中既有需要传入的参数，也有要返回的参数，调用语句如下：
                   CALL ordertotal(20005,@total);
                   必须传递两个参数
-
-             
+          更复杂的存储过程：
+                         -- Name: ordertotal
+                         -- Paraments: onumber = order number
+                         --            taxable = 0 if not taxable, 1 if taxable
+                         --            ototal  = order total variable
+                         CREATE PROCEDURE ordertotal(
+                            IN onumber INT,
+                            IN taxable BOOLEAN,
+                            OUT ototal DECIMAL(8,2)
+                         ) COMMENT 'Obtain order total,optionally adding tax'
+                         BEGIN
+                            -- Declare variable for total
+                            DECLARE total DECIMAL(8,2);
+                            -- Declare tax percentage
+                            DECLARE taxrate INT DEFAULT 6;
+                            
+                            -- Get the order total
+                            SELECT Sum(item_price*quantity)
+                            FROM orderitems
+                            WHERE order_num = onumber
+                            INTO total;
+                            
+                            -- Is this taxable?
+                            IF taxable THEN
+                                -- Yes,so add taxrate to the total
+                                SELECT total+(total/100*taxrate) INTO total;
+                            END IF;
+                            -- And finally,save to out variable
+                            SELECT total INTO ototal;
+                         END;
+             上述案例增加了注释（前面放置--）。添加了一个布尔值的参数taxable。使用DECLARE定义了两个局部变量，需要指定变量名和数据类型，也支持可选的默认值。IF语句判断变量是否为真，
+         为真则执行IF内的SELECT语句，最后将定义的局部变量INTO到变量ototal中。IF语句还支持ELSEIF和ELSE子句（前者使用THEN字句后者不使用）
+             调用：CALL ordertotal(20005,0,@total);
+                  SELECT @total;
+                  或
+                  CALL ordertotal(20005,1,@total);
+                  SELECT @total;
+             SHOW CREATE PROCEDURE ordertotal;显示创建存储过程的语句
+             SHOW PROCEDURE STATUS；显示何时、由谁创建等详细信息，由于会显示所有存储过程信息，可使用LIKE子句过滤
+32、游标：MYSQL游标只能用于存储过程（和函数）
+         
 
   
   
