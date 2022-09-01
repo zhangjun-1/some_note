@@ -306,5 +306,54 @@
                      对于填有数据的游标，根据需要取出各行
                      在游标结束时，必须关闭游标
 
-  
-  
+33、触发器：在某个表发生更改时自动处理。触发器是MYsql响应以下任意语句而自动执行的一条MySQL语句（或位于BEGIN和END语句之间的一组语句）
+                                    DELETE；INSERT；UPDATE
+    创建触发器：创建时需要给出四条信息：
+               唯一的触发器名
+               触发器关联的表
+               触发器应该响应的活动（DELETE、INSERT、UPDATE）
+               触发器何时可执行（处理之前或之后） ------*
+    创建示例：CREATE TRIGGER newproduct AFTER INSERT ON products FOR EACH ROW SELECT 'Product added';
+             创建的触发器将在INSERT语句成功后执行。指定FOR EACH ROW，因此代码对每个插入行执行。文本Product added将对每个插入的行显示一次
+    只有表支持触发器，视图不支持，临时表也不支持。
+    每个表每个事件每次只允许一个触发器；单一触发器不能与多个事件或多个表关联；如果BEFORE触发器失败，则mysql将不执行请求的操作。此外，如果BEFORE触发器或语句本身失败，MySQL将不执行
+ AFTER触发器（如果有的话）
+    触发器创建示例：通过触发器记录renwu表的数据变更日志，将变更的日志插入到日志表renwu_logs中，包含增加、修改、删除
+                  首先创建renwu_logs表
+                  create table renwu_logs(
+                      id int(11) not null auto_increment,
+                      operation varchar(20) not null comment '操作类型，insert/update/delete',
+                      operation_time datetime not null comment '操作时间',
+                      operate_id int(11) not null comment '操作的ID',
+                      operate_params varchar(500) comment '操作参数',
+                      primary key(`id`)
+                      ) engine=innodb default charset=utf8;
+                创建三个分别对应新增、修改、删除的触发器
+                #插入数据触发器
+                create trigger tb_renwu_insert_trigger 
+                	after insert on renwu for each ROW
+                BEGIN
+                	insert into renwu_logs(id,operation,operate_time,operate_id,operate_params) VALUES
+                	(null,'insert',NOW(),new.id,CONCAT('插入的数据内容为：name=',new.name,',id=',new.id,',salary=',new.salary,'Dept_id=',new.Dept_id));
+                end;
+                #查看已创建触发器
+                show TRIGGERS;
+                #修改数据触发器
+                create trigger tb_renwu_update_trigger 
+                	after UPDATE on renwu for each ROW
+                BEGIN
+                	insert into renwu_logs(id,operation,operate_time,operate_id,operate_params) VALUES
+                	(null,'insert',NOW(),new.id,
+                									CONCAT('更新前的数据内容为：name=',old.name,',id=',old.id,',salary=',old.salary,'Dept_id=',old.Dept_id,
+                									' | 更新后的数据内容为：name=',new.name,',id=',new.id,',salary=',new.salary,'Dept_id=',new.Dept_id));
+                end;
+                #删除数据触发器
+                create trigger tb_renwu_delete_trigger 
+                	after DELETE on renwu for each ROW
+                BEGIN
+                	insert into renwu_logs(id,operation,operate_time,operate_id,operate_params) VALUES
+                	(null,'insert',NOW(),old.id,CONCAT('插入的数据内容为：name=',old.name,',id=',old.id,',salary=',old.salary,'Dept_id=',old.Dept_id));
+                end;
+               
+                  
+ 
